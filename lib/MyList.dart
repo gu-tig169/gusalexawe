@@ -1,55 +1,65 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'mystate.dart';
-
+import 'TodoItem.dart';
 
 class MyList extends StatelessWidget {
-  //Deklarerar en Lista med TodoItem och en filterType som är en int.
   final List<TodoItem> list;
-  final int filterType;
+  final String filterBy;
 
-  //Konstruktorn, för att skapa MyList måste du skicka med en lista och en int.
-  MyList(this.list, this.filterType);
+  MyList(this.list, this.filterBy);
 
-//Bygger en ny lista, söker i "list" kollar done hos alla objekt i MyList och jämför done med filterType i MyList.
   Widget build(BuildContext context) {
     return ListView(
-      children: list
-          .where((i) => i.done != filterType)
-          .toList()
-          .map((todo) => _todoItem(context, todo))
-          .toList(),
-    );
+        children: _filterList(list, filterBy)
+            .map((todo) => _todoItem(context, todo))
+            .toList());
+  }
+
+  List<TodoItem> _filterList(listTodo, filterBy) {
+    if (filterBy == 'Klar') {
+      return listTodo.where((todo) => todo.done == true).toList();
+    } else if (filterBy == 'Inte klar') {
+      return listTodo.where((todo) => todo.done == false).toList();
+    } else if (filterBy == 'Alla') {
+      return listTodo;
+    } else {
+      print('Något gick fel');
+      return null;
+    }
   }
 
   Widget _todoItem(context, todo) {
-    return new ListTile(
-      leading: Checkbox(
-          checkColor: Colors.white,
-          activeColor: Colors.black,
-          focusColor: Colors.black,
-          //(todo.done == 0) = antingen true/false, alltså en bool.
-          value: (todo.done == 0),
-          onChanged: (bool newValue) {
-            var state = Provider.of<MyState>(context, listen: false);
-            state.toggleTodo(todo);
-          }),
-      title: Text(
-        todo.title,
-        style: TextStyle(
-          //Beroende på om status är false/true, skapas en linje när todon är klar eller "checked".
-          decoration: todo.done == 0 ? TextDecoration.lineThrough : null,
-          decorationStyle: TextDecorationStyle.solid,
-        ),
-      ),
-      trailing: IconButton(
-        color: Colors.black,
-        icon: Icon(Icons.delete),
-        onPressed: () {
-          var state = Provider.of<MyState>(context, listen: false);
-          state.removeTodo(todo);
-        },
-      ),
-    );
+    return Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+        elevation: 3.0,
+        child: ListTile(
+          contentPadding: EdgeInsets.symmetric(vertical: 10.0),
+          leading: Checkbox(
+              checkColor: Colors.white,
+              activeColor: Colors.black,
+              value: todo.done,
+              onChanged: (bool newValue) {
+                var state = Provider.of<MyState>(context, listen: false);
+                state.toggleTodo(todo);
+              }),
+          title: Text(
+            todo.title,
+            style: TextStyle(
+              color: Colors.black,
+              decoration: todo.done == true ? TextDecoration.lineThrough : null,
+              decorationStyle: TextDecorationStyle.solid,
+            ),
+          ),
+          trailing: IconButton(
+            color: Colors.black,
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              var state = Provider.of<MyState>(context, listen: false);
+              state.removeTodo(todo);
+            },
+          ),
+        ));
   }
 }

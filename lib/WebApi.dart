@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'mystate.dart';
+import 'TodoItem.dart';
 
 const URL = 'https://todoapp-api-vldfm.ondigitalocean.app';
 const KEY = '96372007-914d-4671-9dc2-db366b039a50';
@@ -16,7 +16,7 @@ class WebApi {
       body: bodyString,
       headers: {'Content-Type': 'application/json'},
     );
-    print('done');
+    print('Lagt till');
   }
 
   static Future updateDone(TodoItem todo) async {
@@ -27,12 +27,13 @@ class WebApi {
       body: json,
       headers: {'Content-Type': 'application/json'},
     );
+    print('Uppdaterat');
   }
 
   static Future deleteTodo(String todoId) async {
-   http.Response response = await http.delete('$URL/todos/$todoId?key=$KEY');
-   print(response.body);
-   print('done');
+    http.Response response = await http.delete('$URL/todos/$todoId?key=$KEY');
+    print(response.body);
+    print('Tagit bort');
   }
 
   static Future<List<TodoItem>> fetchTodos() async {
@@ -42,14 +43,5 @@ class WebApi {
     return json.map<TodoItem>((data) {
       return TodoItem.fromJson(data);
     }).toList();
-    
   }
 }
-
-/*class FetchStuffFromInternet {
-static Future<String> fetchStuffFromInternet() async {
-    http.Response response =
-        await http.get('https://todoapp-api-vldfm.ondigitalocean.app/register');
-    return response.body;
-  }
-}*/

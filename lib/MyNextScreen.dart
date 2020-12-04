@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'mystate.dart';
-
-
+import 'TodoItem.dart';
 
 class MyNextScreen extends StatefulWidget {
   final TodoItem todo;
@@ -16,7 +14,7 @@ class MyNextScreen extends StatefulWidget {
 
 class MyNextScreenState extends State<MyNextScreen> {
   String title;
-  int done;
+  bool done;
 
   TextEditingController textEditingController;
 
@@ -41,36 +39,20 @@ class MyNextScreenState extends State<MyNextScreen> {
             _createTodo(),
             Container(height: 10),
             _acceptTodo(),
-            /* RaisedButton.icon(
-                onPressed: () {
-                  _doStuff();
-                },
-                icon: Icon(Icons.access_alarms_rounded),
-                label: Text('Lol'))*/
           ],
         ),
       ),
     );
   }
 
- /* void _doStuff() async {
-    var result = await FetchStuffFromInternet.fetchStuffFromInternet();
-    print(result);
-  }*/
-
- /* Future<String> _fetchStuffFromInternet() async {
-    http.Response response =
-        await http.get('https://todoapp-api-vldfm.ondigitalocean.app/register');
-    return response.body;
-  }*/
-
-
   Widget _appBar2() {
     return PreferredSize(
       preferredSize: Size.fromHeight(38.0),
       child: AppBar(
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Colors.yellow,
-        title: Text("Lägg till To-Do"),
+        title: Text("Lägg till ToDo", style: TextStyle(color: Colors.black)),
       ),
     );
   }
@@ -80,12 +62,20 @@ class MyNextScreenState extends State<MyNextScreen> {
       margin: EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 0),
       child: TextField(
         controller: textEditingController,
-        //Får Texten och en ny status, alltså status 1=Inte klar.
         onSubmitted: (val) {
-          Navigator.pop(context, TodoItem(title: title, done: 1));
+          Navigator.pop(context, TodoItem(title: title, done: false));
         },
         autofocus: true,
-        decoration: InputDecoration(hintText: "Jag behöver göra.."),
+        decoration: InputDecoration(
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black)),
+            enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+              color: Colors.black,
+            )),
+            border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black)),
+            hintText: "Jag behöver göra.."),
       ),
     );
   }
@@ -97,10 +87,9 @@ class MyNextScreenState extends State<MyNextScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           RaisedButton.icon(
+            color: Colors.yellow,
             onPressed: () {
-              //Får Texten och en ny status, alltså status 1=Inte klar.
-              Navigator.pop(context, TodoItem(title: title, done: 1));
-              //addTodo(title);
+              Navigator.pop(context, TodoItem(title: title, done: false));
             },
             icon: Icon(Icons.add),
             label: Text(
